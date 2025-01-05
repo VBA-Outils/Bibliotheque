@@ -20,7 +20,7 @@
  <li><strong>TriBulles</strong> : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.</li>
  <li><strong>TriRapide</strong> : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de tier.</li>
  <li><strong>InitialiserTraitement</strong> : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.</li>
- <li><strong>TerminerTraitement : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.</li>
+ <li><strong>TerminerTraitement</strong> : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.</li>
  <li><strong>EstNomExistant</strong> : vérifie si un nom Excel existe dans le classeur.</li>
  <li><strong>ConvertirUrlSharePoint</strong> : convertit les répertoires sous forme d'URL (https://live....) dans un format compatible avec le systèmes de fichiers de Windows.</li> 
  <li><strong>FichierExiste</strong> : vérifie si le fichier en paramètre existe physiquement.</li>
