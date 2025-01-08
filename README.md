@@ -18,7 +18,7 @@
 <ul>
  <li><strong>ExtensionFichier</strong> : retourne l'extension d'un fichier.</li>
  <li><strong>TriBulles</strong> : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.</li>
- <li><strong>TriRapide</strong> : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de tier.</li>
+ <li><strong>TriRapide</strong> : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de trier.</li>
  <li><strong>InitialiserTraitement</strong> : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.</li>
  <li><strong>TerminerTraitement</strong> : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.</li>
  <li><strong>EstNomExistant</strong> : vérifie si un nom Excel existe dans le classeur.</li>
