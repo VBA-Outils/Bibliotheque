@@ -10,7 +10,7 @@
  <li><strong>DerniereLigne</strong> : retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.</li>
  <li><strong>DerniereColonne</strong> : retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.</li>
  <li><strong>NumeroColonne</strong> : convertit les lettres d'une colonne au numéro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.</li>
- <li><strong>LettreColonne</strong> : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retrouen "A".</li>
+ <li><strong>LettreColonne</strong> : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".</li>
  <li><strong>CreerLienHypertexte</strong> : crée un lien hypertexte dans une cellule donnée du classeur, avec un nom affiché.</strong></li>
  <li><strong>AjouterListeDeroulante</strong> : ajoute une liste déroulante dans la feuille.</li>
 </ul>
