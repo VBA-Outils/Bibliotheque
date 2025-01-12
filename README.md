@@ -1,4 +1,8 @@
 # Bibliotheque
+<h1>Licence</h1>
+<p>Ce projet est distribué sous licence MIT. Consultez le fichier LICENSE pour plus de détails.</p>
+<h1>Prérequis</h1>
+<p>Environnement de développement : Microsoft Visual Basic for Applications (VBA)</p>
 <h1>Fonctions et procédures VBA</h1>
 <p>Le module VBA "Bibliotheque" propose un choix de fonctions et procédures utiles pour gérer vos projets. Ces fonctions permettent de réaliser des actions basiques et souvent redondantes dans les projets</p>
 <h2>Fonctions relatives aux onglets</h2>
