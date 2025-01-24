@@ -1,14 +1,14 @@
 Attribute VB_Name = "Bibliotheque"
 '
-' Fonctions g√©n√©riques VBA
 ' https://github.com/VBA-Outils/Bibliotheque
 '
-' @Module Bibliotheque
+' Fonctions gÈnÈriques VBA
+'
 ' @author vincent.rosset@gmail.com
 ' @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
 '
-' Copyright (c) 2023, Vincent ROSSET
+' Copyright (c) 2024, Vincent ROSSET
 ' All rights reserved.
 '
 ' Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,38 @@ Attribute VB_Name = "Bibliotheque"
 ' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
 
 ' *----------------------------------------------------------------------------------------------------------*
-' * Biblioth√®que de proc√©dures / fonctions multi-projets                                                     *
+' * BibliothËque de procÈdures / fonctions multi-projets                                                     *
 ' *----------------------------------------------------------------------------------------------------------*
 '
-' Dans l'√©diteur de macros (Alt+F11): Menu Outils \ R√©f√©rences
+' Dans l'Èditeur de macros (Alt+F11): Menu Outils \ RÈfÈrences
 ' Cochez les lignes :
 '   "Microsoft Scripting RunTime"
+'
+' Fonctions relatives aux onglets
+'
+' DeprotegerFeuille       : Ùter la protection d'une feuille.
+' ProtegerFeuille         : protÈger une feuille.
+' EstFeuilleExistante     : vÈrifie si le nom de l'onglet existe dans le classeur. Exemple : EstFeuilleExistante(activeWorkBook,"Feuil1")
+' ValidationExiste        : vÈrifie si la cellule de la feuille est une liste dÈroulante. Exemple : ValidationExiste(activeSheet, Range("B1")
+' DerniereLigne           : retourne le numÈro de la derniËre ligne renseignÈe d'une colonne d'une feuille.
+' DerniereColonne         : retourne le numÈro de la derniËre colonne renseignÈe d'une ligne d'une feuille.
+' NumeroColonne           : convertit les lettres d'une colonne au numÈro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.
+' LettreColonne           : convertit un numÈro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".
+' CreerLienHypertexte     : crÈe un lien hypertexte dans une cellule donnÈe du classeur, avec un nom affichÈ.
+' AjouterListeDeroulante  : ajoute une liste dÈroulante dans la feuille.
+'
+' Fonctions gÈnÈriques
+'
+' ExtensionFichier        : retourne l'extension d'un fichier.
+' TriBulles               : trie un tableau de chaÓnes de caractËres avec la mÈthode du tri ‡ bulles.
+' TriRapide               : trie un tableau de chaÓnes de caractËres avec la mÈthode du tri rapide. Cette mÈthode nÈcessite d'initialiser des sentinelles avant de trier.
+' InitialiserTraitement   : procÈdure ‡ exÈcuter au dÈbut d'un traitement afin de dÈsactiver le rafraÓchissement automatique et les ÈvÈnements. Elle permet d'amÈliorer les performances en dÈsactivant les rafraÓchissements de l'Ècran en arriËre-plan.
+' TerminerTraitement      : procÈdure ‡ exÈcuter ‡ la fin du traitement afin d'annuler les dÈsactivations rÈalisÈes ‡ l'initialisation.
+' EstNomExistant          : vÈrifie si un nom Excel existe dans le classeur.
+' ConvertirUrlSharePoint  : convertit les rÈpertoires sous forme d'URL (https://live....) dans un format compatible avec le systËmes de fichiers de Windows.
+' FichierExiste           : vÈrifie si le fichier en paramËtre existe physiquement.
+' RepertoireExiste        : vÈrifie si le rÈpertoire en paramËtre existe physiquement.
+' EnregistrerClasseurSous : enregistre le classeur actif sous le nom sÈlectionnÈ dans la boÓte de dialogue et avec le format prÈdÈfini.
 
 Option Explicit
 Option Compare Text
@@ -58,28 +84,28 @@ Public Function ExtensionFichier(sNomFichier As String) As String
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * Oter la protection d'une feuille (si elle est prot√©g√©e)                                           *
+' * Oter la protection d'une feuille (si elle est protÈgÈe)                                           *
 ' *---------------------------------------------------------------------------------------------------*
 Public Sub DeprotegerFeuille(wFeuille As Worksheet)
     If wFeuille.ProtectContents = True Then wFeuille.Unprotect
 End Sub
 
 ' *---------------------------------------------------------------------------------------------------*
-' * Prot√©ger une feuille en autorisant le reformatage des cellules                                    *
+' * ProtÈger une feuille en autorisant le reformatage des cellules                                    *
 ' *---------------------------------------------------------------------------------------------------*
 Public Sub ProtegerFeuille(wFeuille As Worksheet)
     If wFeuille.ProtectContents = False Then wFeuille.Protect UserInterfaceOnly:=True
 End Sub
 
 ' *---------------------------------------------------------------------------------------------------*
-' * Convertir les letrres d'une colonne au num√©ro de colonne correspondant                            *
+' * Convertir les letrres d'une colonne au numÈro de colonne correspondant                            *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function NumeroColonne(sColonne As String) As Long
 
     Dim iIndice As Integer, iNbColonnes As Integer
     
     iNbColonnes = Len(sColonne)
-    ' 3 lettres maximun par colonne, et la derni√®re colonne pr√©sente dans Excel est "XFD"
+    ' 3 lettres maximun par colonne, et la derniËre colonne prÈsente dans Excel est "XFD"
     If iNbColonnes > 3 Then Exit Function
     If iNbColonnes = 3 And sColonne > "XFD" Then Exit Function
     
@@ -91,7 +117,7 @@ Public Function NumeroColonne(sColonne As String) As Long
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * Convertir un num√©ro de colonne au format Lettre                                                   *
+' * Convertir un numÈro de colonne au format Lettre                                                   *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function LettreColonne(lNumeroColonne As Long) As String
 
@@ -101,33 +127,33 @@ Public Function LettreColonne(lNumeroColonne As Long) As String
 
     If lNumeroColonne > 16384 Or lNumeroColonne < 1 Then Exit Function
 
-    ' Si le num√©ro de colonne > 702 alors 3 lettres sont n√©cessaires
-    ' Entre chaque 1√®re lettre (Axx et Bxx) il existe 26*26=676 combinaisons
-    ' On calcule d'abord le nombre de colonnes - 26 premi√®res colonnes (A √† Z) module 676 afin d'obtenir le rang de la 1√®re lettre (0 = 2 lettres seulement, 1 = Axx, 2 = Bxx)
+    ' Si le numÈro de colonne > 702 alors 3 lettres sont nÈcessaires
+    ' Entre chaque 1Ëre lettre (Axx et Bxx) il existe 26*26=676 combinaisons
+    ' On calcule d'abord le nombre de colonnes - 26 premiËres colonnes (A ‡ Z) module 676 afin d'obtenir le rang de la 1Ëre lettre (0 = 2 lettres seulement, 1 = Axx, 2 = Bxx)
     l1ereLettre = (lNumeroColonne - 27) \ 676
-    ' Calcul la valeur du num√©ro de colonne (des 2√®me et 3√®me lettre) sans la premi√®re lettre
+    ' Calcul la valeur du numÈro de colonne (des 2Ëme et 3Ëme lettre) sans la premiËre lettre
     lNumeroColonne = lNumeroColonne - l1ereLettre * 676
-    ' Calcul du r√©sultat modulo 26 afin d'obtenir le rang de la 2√®me lettre (1 = Ax, 2 = Bx)
+    ' Calcul du rÈsultat modulo 26 afin d'obtenir le rang de la 2Ëme lettre (1 = Ax, 2 = Bx)
     l2emeLettre = (lNumeroColonne - 1) \ 26
-    ' Calcul du rang de la 3√®me lettre, c'est-√†-dire le reste de la division par 26
+    ' Calcul du rang de la 3Ëme lettre, c'est-‡-dire le reste de la division par 26
     l3emeLettre = lNumeroColonne - l2emeLettre * 26
-    ' Concat√®ne les 3 r√©sultats afin d'obtenir les lettres qui correspondent au n¬∞ de colonne
+    ' ConcatËne les 3 rÈsultats afin d'obtenir les lettres qui correspondent au n∞ de colonne
     LettreColonne = IIf(l1ereLettre = 0, "", Chr(64 + l1ereLettre)) & IIf(l2emeLettre = 0, "", Chr(64 + l2emeLettre)) + Chr(64 + l3emeLettre)
 
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * V√©rifier si un nom de feuille existe dans le Classeur actif                                       *
+' * VÈrifier si un nom de feuille existe dans le Classeur actif                                       *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function EstFeuilleExistante(wbClasseur As Workbook, sNomFeuille As String) As Boolean
 
     Dim wsFeuille As Worksheet
 
-    ' Pour chaque feuille pr√©sente dans le classeur
+    ' Pour chaque feuille prÈsente dans le classeur
     For Each wsFeuille In wbClasseur.Worksheets
-        ' Si le nom de la feuille en entr√©e est identique √† celui d'une feuille du classeur (ne pas tenir compte de la casse)
+        ' Si le nom de la feuille en entrÈe est identique ‡ celui d'une feuille du classeur (ne pas tenir compte de la casse)
         If UCase$(wsFeuille.Name) = UCase$(sNomFeuille) Then
-            ' La feuille existe dans le classeur, on retourne le bool√©en Vrai
+            ' La feuille existe dans le classeur, on retourne le boolÈen Vrai
             EstFeuilleExistante = True
             Exit Function
         End If
@@ -137,130 +163,48 @@ Public Function EstFeuilleExistante(wbClasseur As Workbook, sNomFeuille As Strin
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * Tri √† bulles                                                                                      *
-' *---------------------------------------------------------------------------------------------------*
-Public Sub TriBulles(aTableau() As String, sSensTri As String)
-
-    ' sSensTri : A = ascendant, D = descendant
-    
-    Dim lIndice1ereBoucle As Long, lIndice2ndeBoucle As Long, lPremOccur As Long, lDernOccur As Long, sPermut As String, bTabTrie As Boolean
-
-    ' Indice de la 1√®re occurrence du tableau (0 ou 1) en fonction des options VBA
-    lPremOccur = LBound(aTableau)
-    ' Indice de la derni√®re occurrence du tableau
-    lDernOccur = UBound(aTableau)
-    ' 1√®re boucle de la fin du tableau jusqu'√† la 2√®me occurrence
-    For lIndice1ereBoucle = lDernOccur To lPremOccur + 1 Step -1
-        ' Le tableau est consid√©r√© comme tri√© tant qu'aucune permutation n'a eu lieu
-        bTabTrie = True
-        ' 2√®me boucle du d√©but du tableau jusqu'√† l'occurrence pr√©c√©dente de la 1√®re boucle
-        For lIndice2ndeBoucle = lPremOccur To lIndice1ereBoucle - 1
-            ' Comparaison de 2 occurrences cons√©cutives afin de les permuter si n√©cessaire
-            If sSensTri = "A" And aTableau(lIndice2ndeBoucle) > aTableau(lIndice2ndeBoucle + 1) Or _
-               sSensTri = "D" And aTableau(lIndice2ndeBoucle) < aTableau(lIndice2ndeBoucle + 1) Then
-                ' Les 2 occurrences sont permut√©es
-                sPermut = aTableau(lIndice2ndeBoucle)
-                aTableau(lIndice2ndeBoucle) = aTableau(lIndice2ndeBoucle + 1)
-                aTableau(lIndice2ndeBoucle + 1) = sPermut
-                ' Le tableau n'est pas tri√©
-                bTabTrie = False
-            End If
-        Next lIndice2ndeBoucle
-        ' Si aucune permutation n'a √©t√© r√©alis√©e alors le tableau est tri√©, on peut sortir de la boucle
-        If bTabTrie Then Exit For
-    Next lIndice1ereBoucle
-
-End Sub
-
-' *---------------------------------------------------------------------------------------------------*
-' * Tri rapide d'un tableau de cha√Ænes de caract√®res par ordre croissant                              *
-' * Avant appel du tri, les sentinelles doivent √™tre plac√©es en d√©but et fin de tableau.              *
-' *---------------------------------------------------------------------------------------------------*
-Public Sub TriRapide(aTableau() As String, lBorneInf As Long, lBorneSup As Long)
-    
-    ' Indice afin de parcourir le tableau depuis le d√©but jusqu'au pivot
-    Dim lIcDebTab As Long
-    ' Indice afin de parcourir le tableau depuis la fin jusqu'au pivot
-    Dim lIcFinTab As Long
-    ' Permutation des valeurs
-    Dim sPermutation As String
-    ' Valeur pivot
-    Dim sValPivot As String
-    ' Bool√©en de fin de recherche du pivot
-    Dim bContinueTrt As Boolean
-    
-    If lBorneSup > lBorneInf Then
-        sValPivot = aTableau(lBorneInf)
-        ' D√©bute la recherche √† partir de l'indice suivant
-        lIcDebTab = lBorneInf + 1
-        lIcFinTab = lBorneSup
-        bContinueTrt = True
-        Do While bContinueTrt
-            Do While aTableau(lIcDebTab) < sValPivot
-                lIcDebTab = lIcDebTab + 1
-            Loop
-            Do While aTableau(lIcFinTab) >= sValPivot
-                lIcFinTab = lIcFinTab - 1
-            Loop
-            If lIcDebTab >= lIcFinTab Then
-                bContinueTrt = False
-            Else
-                sPermutation = aTableau(lIcDebTab)
-                aTableau(lIcDebTab) = aTableau(lIcFinTab)
-                aTableau(lIcFinTab) = sPermutation
-            End If
-        Loop
-        sPermutation = aTableau(lIcDebTab - 1)
-        aTableau(lIcDebTab - 1) = sValPivot
-        aTableau(lBorneInf) = sPermutation
-        Call TriRapide(aTableau, lBorneInf, lIcDebTab - 2)
-        Call TriRapide(aTableau, lIcDebTab, lBorneSup)
-    End If
-End Sub
-
-' *---------------------------------------------------------------------------------------------------*
-' * Proc√©dures d'initialisation et de terminaison d'un traitement                                     *
+' * ProcÈdures d'initialisation et de terminaison d'un traitement                                     *
 ' *---------------------------------------------------------------------------------------------------*
 Public Sub InitialiserTraitement()
 
-    ' Ne plus rafraichir l'√©cran
+    ' Ne plus rafraichir l'Ècran
     Application.ScreenUpdating = False
     ' Afficher le curseur d'attente (sablier)
     Application.Cursor = xlWait
     ' Annuler le copier/couper d'Excel qui serait encore actif (cela perturbe certaines actions faites par VBA)
     Application.CutCopyMode = False
-    ' Pour toute automatisation, on commence par inhiber les √©v√©nements, afin de ne pas d√©clencher Worksheet_Change
+    ' Pour toute automatisation, on commence par inhiber les ÈvÈnements, afin de ne pas dÈclencher Worksheet_Change
     Application.EnableEvents = False
 
 End Sub
 
 Public Sub TerminerTraitement()
 
-    ' Rafraichier de nouveau l'√©cran
+    ' Rafraichier de nouveau l'Ècran
     Application.ScreenUpdating = True
-    ' Affichier le curseur de souris par d√©faut
+    ' Affichier le curseur de souris par dÈfaut
     Application.Cursor = xlDefault
-    ' R√©activer les √©v√©nements
+    ' RÈactiver les ÈvÈnements
     Application.EnableEvents = True
 
 End Sub
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * V√©rifie si la cellule est une liste d√©roulante                                                                           *
+' * VÈrifie si la cellule est une liste dÈroulante                                                                           *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Function ValidationExiste(wFeuille As Worksheet, rCellule As Range) As Boolean
 
     Dim rCible As Range, bFeuilleProtegee As Boolean
  
-    ' Sauvegarde l'√©tat de protection de la feuille
+    ' Sauvegarde l'Ètat de protection de la feuille
     bFeuilleProtegee = wFeuille.ProtectContents
-    ' D√©prot√©ger la feuille afin de pouvoir rechercher les cellules de validation
+    ' DÈprotÈger la feuille afin de pouvoir rechercher les cellules de validation
     If bFeuilleProtegee Then Call DeprotegerFeuille(wFeuille)
     
-    ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non prot√©g√©e.
+    ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non protÈgÈe.
     Set rCible = wFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
     
-    ' Si aucune cellule de validation trouv√©e dans la feuille
+    ' Si aucune cellule de validation trouvÈe dans la feuille
     If rCible Is Nothing Then
         ValidationExiste = False
     Else
@@ -271,21 +215,21 @@ Public Function ValidationExiste(wFeuille As Worksheet, rCellule As Range) As Bo
         End If
     End If
     
-    ' Prot√©ger de nouveau la feuille
+    ' ProtÈger de nouveau la feuille
     If bFeuilleProtegee Then Call ProtegerFeuille(wFeuille)
 
 End Function
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * Retourne Vrai si le nom est d√©j√† d√©fini dans le classeur                                                                 *
+' * Retourne Vrai si le nom est dÈj‡ dÈfini dans le classeur                                                                 *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Function EstNomExistant(wbClasseur As Workbook, sNom As String) As Boolean
 
     Dim nNom As Name
     
-    ' Pour chaque nom pr√©sent dans le classeur
+    ' Pour chaque nom prÈsent dans le classeur
     For Each nNom In wbClasseur.Names
-        ' Si le nom en entr√©e existe dans le classeur
+        ' Si le nom en entrÈe existe dans le classeur
         If nNom.Name = sNom Then
             EstNomExistant = True
             Exit Function
@@ -296,7 +240,7 @@ Public Function EstNomExistant(wbClasseur As Workbook, sNom As String) As Boolea
 End Function
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * Recherche de la derni√®re ligne renseign√©e d'une colonne                                                                  *
+' * Recherche de la derniËre ligne renseignÈe d'une colonne                                                                  *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Function DerniereLigne(wsFeuille As Worksheet, lNumeroColonne As Long) As Long
 
@@ -304,7 +248,7 @@ Public Function DerniereLigne(wsFeuille As Worksheet, lNumeroColonne As Long) As
     
     ' Dans la colonne n de la feuille
     With wsFeuille.Columns(lNumeroColonne)
-        ' Rechercher la ligne pr√©c√©dente qui contient un texte
+        ' Rechercher la ligne prÈcÈdente qui contient un texte
         Set rCellule = .Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlPrevious, LookIn:=xlValues)
         If rCellule Is Nothing Then
             DerniereLigne = 1
@@ -316,7 +260,7 @@ Public Function DerniereLigne(wsFeuille As Worksheet, lNumeroColonne As Long) As
 End Function
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * Recherche de la derni√®re colonne renseign√©e d'une ligne                                                                  *
+' * Recherche de la derniËre colonne renseignÈe d'une ligne                                                                  *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Function DerniereColonne(wsFeuille As Worksheet, lNumeroLigne As Long) As Long
 
@@ -324,7 +268,7 @@ Public Function DerniereColonne(wsFeuille As Worksheet, lNumeroLigne As Long) As
     
     ' Dans la ligne n de la feuille
     With wsFeuille.Rows(lNumeroLigne)
-        ' Rechercher la colonne pr√©c√©dente qui contient un texte
+        ' Rechercher la colonne prÈcÈdente qui contient un texte
         Set rCellule = .Find("*", SearchOrder:=xlByRows, SearchDirection:=xlPrevious, LookIn:=xlValues)
         If rCellule Is Nothing Then
             DerniereColonne = 1
@@ -336,7 +280,7 @@ Public Function DerniereColonne(wsFeuille As Worksheet, lNumeroLigne As Long) As
 End Function
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * Convertir un nom de chemin d√©fini par une URL OneDrive ou SharePoint vers un nom de chemin Windows                       *
+' * Convertir un nom de chemin dÈfini par une URL OneDrive ou SharePoint vers un nom de chemin Windows                       *
 ' * Exemple : https://xxx-my.sharepoint.com/personal/ devient c:\Users\xxxx\OneDrive - xxx                                   *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Function ConvertirUrlSharePoint(sChemin As String) As String
@@ -348,12 +292,12 @@ Public Function ConvertirUrlSharePoint(sChemin As String) As String
         Select Case True
         ' Espace personnel sur SharePoint (i.e. OneDrive Commercial) ?
         Case sChemin Like "https://*-my.sharepoint.com/personal/*":
-            ' Recherche la cha√Æne "/Documents/documents" afin d'obtenir le d√©but de l'arborescence dans le dossier des documents
+            ' Recherche la chaÓne "/Documents/documents" afin d'obtenir le dÈbut de l'arborescence dans le dossier des documents
             lPosDoc = InStr(1, sChemin, "/Documents/Documents/", vbTextCompare) + Len("/Documents")
-            ' Le r√©pertoire local est r√©cup√©r√© √† partir du 2√®me /Documents
+            ' Le rÈpertoire local est rÈcupÈrÈ ‡ partir du 2Ëme /Documents
             sRepertoire = Mid(sChemin, lPosDoc, Len(sChemin) - lPosDoc + 1)
             ConvertirUrlSharePoint = Environ("OneDriveCommercial") & Replace(sRepertoire, "/", "\")
-        ' Espace de travail partag√©
+        ' Espace de travail partagÈ
         Case sChemin Like "https://weshare*":
             sListeDossiers = Split(sChemin, "/")
             ConvertirUrlSharePoint = "\\" & sListeDossiers(2) & "@SSL\DavWWWRoot"
@@ -361,9 +305,9 @@ Public Function ConvertirUrlSharePoint(sChemin As String) As String
                 ConvertirUrlSharePoint = ConvertirUrlSharePoint & "\" & sListeDossiers(iNbDossiers)
             Next
         Case sChemin Like "https://d.docs.live.net/*":
-            ' Recherche la cha√Æne "/documents" afin d'obtenir le d√©but de l'arborescence dans le dossier des documents
+            ' Recherche la chaÓne "/documents" afin d'obtenir le dÈbut de l'arborescence dans le dossier des documents
             lPosDoc = InStr(1, sChemin, "/Documents/", vbTextCompare)
-            ' Le r√©pertoire local est r√©cup√©r√© √† partir du 2√®me /Documents
+            ' Le rÈpertoire local est rÈcupÈrÈ ‡ partir du 2Ëme /Documents
             sRepertoire = Mid(sChemin, lPosDoc, Len(sChemin) - lPosDoc + 1)
             ConvertirUrlSharePoint = Environ("OneDrive") & Replace(sRepertoire, "/", "\")
         End Select
@@ -374,7 +318,7 @@ Public Function ConvertirUrlSharePoint(sChemin As String) As String
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * V√©rifie si un fichier existe                                                                      *
+' * VÈrifie si un fichier existe                                                                      *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function FichierExiste(sNomFichier) As Boolean
     
@@ -383,7 +327,7 @@ Public Function FichierExiste(sNomFichier) As Boolean
 End Function
 
 ' *---------------------------------------------------------------------------------------------------*
-' * V√©rifie si un r√©pertoire existe                                                                   *
+' * VÈrifie si un rÈpertoire existe                                                                   *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function RepertoireExiste(sRepertoire As String) As Boolean
     
@@ -392,11 +336,11 @@ Public Function RepertoireExiste(sRepertoire As String) As Boolean
 End Function
 
 ' *--------------------------------------------------------------------------------------------------------------------------*
-' * Ajout d'une liste d√©roulante dans une cellule                                                                            *
+' * Ajout d'une liste dÈroulante dans une cellule                                                                            *
 ' *--------------------------------------------------------------------------------------------------------------------------*
 Public Sub AjouterListeDeroulante(rCellule As Range, sNomListe As String, bIgnorerErreur As Boolean, bListeDansCellule As Boolean, bAfficherErreur As Boolean)
 
-    ' Cr√©ation d'une liste d√©roulante
+    ' CrÈation d'une liste dÈroulante
     With rCellule.Validation
         .Delete
         .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="=" & sNomListe
@@ -412,7 +356,7 @@ Public Sub AjouterListeDeroulante(rCellule As Range, sNomListe As String, bIgnor
 End Sub
                                                                                           
 ' *---------------------------------------------------------------------------------------------------*
-' *  Cr√©er un lien hypertete dans une cellule                                                         *
+' *  CrÈer un lien hypertete dans une cellule                                                         *
 ' *---------------------------------------------------------------------------------------------------*
 Public Function CreerLienHypertexte(NomClasseur As String, NomFeuille As String, AdrCellule As String, Repertoire As String, NomClasseurSource As String, NomFeuilleSource As String, AdrCelluleSource As String)
 
@@ -428,8 +372,8 @@ End Function
 ' *---------------------------------------------------------------------------------------------------*
 ' * Enregistrer le classeur/feuille active sous le format et le nom                                   *
 ' *---------------------------------------------------------------------------------------------------*
-' NomClasseur : nom du fichier √† enregistrer
-' FormatFichier : Format du fichier enregistr√©
+' NomClasseur : nom du fichier ‡ enregistrer
+' FormatFichier : Format du fichier enregistrÈ
 '   xlCSV                          6   *.csv   CSV
 '   xlCSVUTF8                      62  *.csv   UTF8 CSV
 '   xlCSVWindows                   23  *.csv   CSV Windows
@@ -444,15 +388,15 @@ Public Sub EnregistrerClasseurSous(NomClasseur As String, FormatFichier As Long,
 
     Dim NomFichier As Variant, CheminAcces As String, Filtre As String
     
-    ' Lire le r√©pertoire du classeur √† enregistrer sous
+    ' Lire le rÈpertoire du classeur ‡ enregistrer sous
     CheminAcces = Workbooks(NomClasseur).Path
     ' Convertir les URL SP et OneDrive au format de gestion des fichiers de l'OS
     If ConvertirUrlSharePoint(CheminAcces) Then
-        MsgBox "Dossier SharePoint non g√©r√© : """ & CheminAcces & """", vbCritical
+        MsgBox "Dossier SharePoint non gÈrÈ : """ & CheminAcces & """", vbCritical
         Exit Sub
     End If
     
-    ' Initialiser les filtres √† appliquer lors de la s√©lection du fichier √† enregsitrer
+    ' Initialiser les filtres ‡ appliquer lors de la sÈlection du fichier ‡ enregsitrer
     Select Case FormatFichier
         Case xlCSV: Filtre = "CSV, *.csv"
         Case xlCSVUTF8: Filtre = "UTF8 CSV, *.csv"
@@ -468,14 +412,14 @@ Public Sub EnregistrerClasseurSous(NomClasseur As String, FormatFichier As Long,
             MsgBox "Format de fichier non pris en charge", vbCritical, "Fin de l'enregistrement sous"
             Exit Sub
     End Select
-    ' Changer le r√©pertoire
+    ' Changer le rÈpertoire
     ChDir CheminAcces
     ' Appel de la fonction pour enregistrer sous
     NomFichier = Application.GetSaveAsFilename(FileFilter:=Filtre, Title:="Enregistrer le fichier sous le nom :", _
                   InitialFileName:=NomInitialFichier)
-    ' Si un nom de fichier a √©t√© s√©lectionn√© ou saisi
+    ' Si un nom de fichier a ÈtÈ sÈlectionnÈ ou saisi
     If NomFichier <> False Then
-        ' Interception des erreurs, mais aucune action (e.g. l'utilisateur refuse d'√©craser le fichier)
+        ' Interception des erreurs, mais aucune action (e.g. l'utilisateur refuse d'Ècraser le fichier)
         On Error Resume Next
         ' Enregistrer sans mot de passe
         ActiveWorkbook.SaveAs WriteResPassword:="", Filename:=NomFichier, Password:="", FileFormat:=FormatFichier
