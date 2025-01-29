@@ -4,7 +4,6 @@ Attribute VB_Name = "Bibliotheque"
 '
 ' Fonctions génériques VBA
 '
-' @author vincent.rosset@gmail.com
 ' @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
 '
@@ -37,10 +36,6 @@ Attribute VB_Name = "Bibliotheque"
 ' *----------------------------------------------------------------------------------------------------------*
 ' * Bibliothèque de procédures / fonctions multi-projets                                                     *
 ' *----------------------------------------------------------------------------------------------------------*
-'
-' Dans l'éditeur de macros (Alt+F11): Menu Outils \ Références
-' Cochez les lignes :
-'   "Microsoft Scripting RunTime"
 '
 ' Fonctions relatives aux onglets
 '
