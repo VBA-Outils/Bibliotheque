@@ -81,15 +81,15 @@ End Function
 ' *---------------------------------------------------------------------------------------------------*
 ' * Oter la protection d'une feuille (si elle est protégée)                                           *
 ' *---------------------------------------------------------------------------------------------------*
-Public Sub DeprotegerFeuille(wFeuille As Worksheet)
-    If wFeuille.ProtectContents = True Then wFeuille.Unprotect
+Public Sub DeprotegerFeuille(wsFeuille As Worksheet)
+    If wsFeuille.ProtectContents = True Then wsFeuille.Unprotect
 End Sub
 
 ' *---------------------------------------------------------------------------------------------------*
 ' * Protéger une feuille en autorisant le reformatage des cellules                                    *
 ' *---------------------------------------------------------------------------------------------------*
-Public Sub ProtegerFeuille(wFeuille As Worksheet)
-    If wFeuille.ProtectContents = False Then wFeuille.Protect UserInterfaceOnly:=True
+Public Sub ProtegerFeuille(wsFeuille As Worksheet)
+    If wsFeuille.ProtectContents = False Then wsFeuille.Protect UserInterfaceOnly:=True
 End Sub
 
 ' *---------------------------------------------------------------------------------------------------*
@@ -114,7 +114,7 @@ End Function
 ' *---------------------------------------------------------------------------------------------------*
 ' * Convertir un numéro de colonne au format Lettre                                                   *
 ' *---------------------------------------------------------------------------------------------------*
-Public Function LettreColonne(lNumeroColonne As Long) As String
+Public Function LettreColonne(ByVal lNumeroColonne As Long) As String
 
     Dim l1ereLettre As Long
     Dim l2emeLettre As Long
@@ -187,17 +187,17 @@ End Sub
 ' *--------------------------------------------------------------------------------------------------------------------------*
 ' * Vérifie si la cellule est une liste déroulante                                                                           *
 ' *--------------------------------------------------------------------------------------------------------------------------*
-Public Function ValidationExiste(wFeuille As Worksheet, rCellule As Range) As Boolean
+Public Function ValidationExiste(wsFeuille As Worksheet, rCellule As Range) As Boolean
 
     Dim rCible As Range, bFeuilleProtegee As Boolean
  
     ' Sauvegarde l'état de protection de la feuille
-    bFeuilleProtegee = wFeuille.ProtectContents
+    bFeuilleProtegee = wsFeuille.ProtectContents
     ' Déprotéger la feuille afin de pouvoir rechercher les cellules de validation
-    If bFeuilleProtegee Then Call DeprotegerFeuille(wFeuille)
+    If bFeuilleProtegee Then Call DeprotegerFeuille(wsFeuille)
     
     ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non protégée.
-    Set rCible = wFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
+    Set rCible = wsFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
     
     ' Si aucune cellule de validation trouvée dans la feuille
     If rCible Is Nothing Then
@@ -211,7 +211,7 @@ Public Function ValidationExiste(wFeuille As Worksheet, rCellule As Range) As Bo
     End If
     
     ' Protéger de nouveau la feuille
-    If bFeuilleProtegee Then Call ProtegerFeuille(wFeuille)
+    If bFeuilleProtegee Then Call ProtegerFeuille(wsFeuille)
 
 End Function
 
