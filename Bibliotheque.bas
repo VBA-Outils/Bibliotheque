@@ -37,34 +37,37 @@ Attribute VB_Name = "Bibliotheque"
 ' Bibliothèque de procédures / fonctions multi-projets
 '-------------------------------------------------------------------------------------------------------------------------
 '
-' Fonctions relatives aux onglets
-'
-' DeprotegerFeuille       : ôter la protection d'une feuille.
-' ProtegerFeuille         : protéger une feuille.
-' EstFeuilleExistante     : vérifie si le nom de l'onglet existe dans le classeur. Exemple : EstFeuilleExistante(activeWorkBook,"Feuil1")
-' ValidationExiste        : vérifie si la cellule de la feuille est une liste déroulante. Exemple : ValidationExiste(activeSheet, Range("B1")
-' DerniereLigne           : retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.
-' DerniereColonne         : retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.
-' NumeroColonne           : convertit les lettres d'une colonne au numéro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.
-' LettreColonne           : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".
-' CreerLienHypertexte     : crée un lien hypertexte dans une cellule donnée du classeur, avec un nom affiché.
-' AjouterListeDeroulante  : ajoute une liste déroulante dans la feuille.
-'
-' Fonctions génériques
-'
-' ExtensionFichier        : retourne l'extension d'un fichier.
-' TriBulles               : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.
-' TriRapide               : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de trier.
-' InitialiserTraitement   : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.
-' TerminerTraitement      : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.
-' EstNomExistant          : vérifie si un nom Excel existe dans le classeur.
-' ConvertirUrlSharePoint  : convertit les répertoires sous forme d'URL (https://live....) dans un format compatible avec le systèmes de fichiers de Windows.
-' FichierExiste           : vérifie si le fichier en paramètre existe physiquement.
-' RepertoireExiste        : vérifie si le répertoire en paramètre existe physiquement.
-' EnregistrerClasseurSous : enregistre le classeur actif sous le nom sélectionné dans la boîte de dialogue et avec le format prédéfini.
+' DeprotegerFeuille        : ôter la protection d'une feuille.
+' ProtegerFeuille          : protéger une feuille.
+' EstFeuilleExistante      : vérifie si le nom de l'onglet existe dans le classeur. Exemple : EstFeuilleExistante(activeWorkBook,"Feuil1")
+' ValidationExiste         : vérifie si la cellule de la feuille est une liste déroulante. Exemple : ValidationExiste(activeSheet, Range("B1")
+' DerniereLigne            : retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.
+' DerniereColonne          : retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.
+' NumeroColonne            : convertit les lettres d'une colonne au numéro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.
+' LettreColonne            : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".
+' AjouterListeDeroulante   : ajoute une liste déroulante dans la feuille.
+' ExtensionFichier         : retourne l'extension d'un fichier.
+' TriBulles                : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.
+' TriRapide                : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de trier.
+' InitialiserTraitement    : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.
+' TerminerTraitement       : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.
+' EstNomExistant           : vérifie si un nom Excel existe dans le classeur.
+' ConvertirUrlSharePoint   : convertit les répertoires sous forme d'URL (https://live....) dans un format compatible avec le systèmes de fichiers de Windows.
+' FichierExiste            : vérifie si le fichier en paramètre existe physiquement.
+' RepertoireExiste         : vérifie si le répertoire en paramètre existe physiquement.
+' EnregistrerClasseurSous  : enregistre le classeur actif sous le nom sélectionné dans la boîte de dialogue et avec le format prédéfini.
+' ListeLignesSelectionnees : Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête
 
 Option Explicit
 Option Compare Text
+
+'-------------------------------------------------------------------------------------------------------------------------
+' Enum pour l'ordre du tri à bulles
+'-------------------------------------------------------------------------------------------------------------------------
+Public Enum OrderByEnum
+    Ascending = 1
+    Descending = 2
+End Enum
 
 '-------------------------------------------------------------------------------------------------------------------------
 ' Retourne l'extension d'un fichier
@@ -389,7 +392,7 @@ Public Function ConvertirUrlSharePoint(Chemin As String) As String
     ' Si le chemin du fichier commence par http
     If LCase$(Left(Chemin, 4)) = "http" Then
         Select Case True
-        ' Espace personnel sur SharePoint (i.e. OneDrive Commercial) ?
+        ' Espace personnel sur SharePoint (i.e. OneDrive Commercial)
         Case Chemin Like "https://*-my.sharepoint.com/personal/*"
             ' Recherche la chaîne "/Documents/documents" afin d'obtenir le début de l'arborescence dans le dossier des documents
             lPosDoc = InStr(1, Chemin, "/Documents/Documents/", vbTextCompare) + Len("/Documents")
@@ -451,105 +454,166 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Créer une liste déroulante dans une cellule donnée
 '-------------------------------------------------------------------------------------------------------------------------
-' Cellule : Objet Cellule (unique) dans lequel la liste déroualnte doit être créée
+' Cellule : Objet Cellule (unique) dans lequel la liste déroulante doit être créée
+' Formula1 : Renvoie la valeur ou l'expression associée au format conditionnel ou à la validation des données.
+'            Il peut s’agir d’une valeur constante, d’une valeur de chaîne, d’une référence de cellule ou d’une formule. Type de données String en lecture seule.
+' InCellDropdown : True si la validation de données affiche une liste déroulante qui contient les valeurs autorisées.
+' IgnoreBlank : Cette propriété a la valeur True si des valeurs nulles sont autorisées par la validation de données de la plage.
+' ShowError : True si le message d’erreur de validation de données s’affiche lorsque l’utilisateur entre des données non valides.
 '-------------------------------------------------------------------------------------------------------------------------
 ' La procédure crée une liste déroulante constituée des éléments présents dans le nom donné
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
-' AjouterListeDeroulante(Range("A1"),"Pays",True,True,True)
+' AjouterListeDeroulante(Range("A1"),"=Pays",True,True,True)
 '-------------------------------------------------------------------------------------------------------------------------
-Public Sub AjouterListeDeroulante(Cellule As Range, NomListe As String, IgnorerErreur As Boolean, ListeDansCellule As Boolean, AfficherErreur As Boolean)
+Public Sub AjouterListeDeroulante(Cellule As Range, Formula1 As String, IgnoreBlank As Boolean, InCellDropdown As Boolean, ShowError As Boolean)
 
     ' Création d'une liste déroulante
     With Cellule.Validation
         .Delete
-        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="" & NomListe
-        .IgnoreBlank = IgnorerErreur
-        .InCellDropdown = ListeDansCellule
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:=Formula1
+        .IgnoreBlank = IgnoreBlank
+        .InCellDropdown = InCellDropdown
         .InputTitle = ""
         .ErrorTitle = ""
         .InputMessage = ""
         .ErrorMessage = ""
         .ShowInput = True
-        .ShowError = AfficherErreur
+        .ShowError = ShowError
     End With
 End Sub
-                                                                                          
+
 '-------------------------------------------------------------------------------------------------------------------------
-' Déterminer la liste des lignes sélectionnées
+' Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête
 '-------------------------------------------------------------------------------------------------------------------------
-' NumeroLigneEntete : Nnuméro de la dernière ligen de l'en-tête de la feuille. Tous les numéros de ligne inférieurs à cette valeur seront ignorés.
-'-------------------------------------------------------------------------------------------------------------------------
-' La procédure crée un objet ArrayList qui contient l'ensemble des lignes dont au moins une cellule a été sélectionnée
+' NumeroLigneEntete : Numéro de ligne à partir duquel les lignes sont ajoutées dans la liste
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
-' ListeLignesSelectionnees(1,True)
+' dim aListe() as long
+' aListe = ListeLignesSelectionnees()
 '-------------------------------------------------------------------------------------------------------------------------
-Public Function ListeLignesSelectionnees(Optional NumeroLigneEntete As Long = 0, Optional TriLignes As Boolean = False) As Object
+Public Function ListeLignesSelectionnees(Optional NumeroLigneEntete As Long = 0) As Variant
 
-    Dim lNumeroLigne As Long, IcAdrCell As Long
-    Dim aListeAdrCell() As String, sAdresse As String, aPlage() As String, IcPlage As Long, lNumeroLigneDeb As Long, lNumeroLigneFin As Long
+    Dim rCell As Range, dListeLignes As New Dictionary, aListe() As Variant
     
-    Set ListeLignesSelectionnees = CreateObject("System.Collections.ArrayList")
+    ' Pour chaque cellule sélectionnée dans le classeur actif
+    For Each rCell In Selection.Cells
+        ' Si le numéro de ligne de la cellule est supérieur à celui de l'en-tête alors on ajoute ce numéro à la liste
+        If rCell.Row > NumeroLigneEntete Then dListeLignes(rCell.Row) = True
+    Next rCell
     
-    ' Découpe la liste des adresses sélectionnées
-    aListeAdrCell = Split(Selection.Address, ",")
+    ' Convertir en tableau pour le tri
+    aListe = dListeLignes.Keys
+    Call TriBulles(aListe, Ascending)
     
-    ' Pour chaque bloc sélectionné
-    For IcAdrCell = LBound(aListeAdrCell) To UBound(aListeAdrCell)
+    ListeLignesSelectionnees = aListe
     
-        sAdresse = aListeAdrCell(IcAdrCell)
-        ' Plage de cellules ?
-        If InStr(1, sAdresse, ":") > 0 Then
-            ' Découpe la plage de cellules depuis le coin haut gauche vers le coin bas droite
-            aPlage = Split(sAdresse, ":")
-            lNumeroLigneDeb = Ligne(aPlage(0))
-            ' Si c'est une colonne qui a été sélectionnée
-            If lNumeroLigneDeb = -1 Then
-                Err.Raise -30, , "Ne pas sélectionner une colonne entière"
+    Set dListeLignes = Nothing
+    
+End Function
+
+'-------------------------------------------------------------------------------------------------------------------------
+' Tri à bulles
+'-------------------------------------------------------------------------------------------------------------------------
+' aTableau() : Tableau à trier
+' OrderBy    : Ordre du tri
+'-------------------------------------------------------------------------------------------------------------------------
+' Exemple d'appel :
+' dim aListe() as long
+' aListe(0) = 5
+' aListe(1) = 2
+' Call TriBulles(aListe)
+'-------------------------------------------------------------------------------------------------------------------------
+Public Sub TriBulles(aTableau() As Variant, OrderBy As OrderByEnum)
+
+    Dim IcBoucle1 As Long, IcBoucle2 As Long, IcPremOccur As Long, IcDernOccur As Long, vPermutation As Variant, bTableauTrie As Boolean
+
+    ' Indice de la 1ère occurrence du tableau (0 ou 1) en fonction des options VBA
+    IcPremOccur = LBound(aTableau)
+    ' Indice de la dernière occurrence du tableau
+    IcDernOccur = UBound(aTableau)
+    ' 1ère boucle de la fin du tableau jusqu'à la 2ème occurrence
+    For IcBoucle1 = IcDernOccur To IcPremOccur + 1 Step -1
+        ' Le tableau est considéré comme trié tant qu'aucune vPermutation n'a eu lieu
+        bTableauTrie = True
+        ' 2ème boucle du début du tableau jusqu'à l'occurrence précédente de la 1ère boucle
+        For IcBoucle2 = IcPremOccur To IcBoucle1 - 1
+            ' Comparaison de 2 occurrences consécutives afin de les permuter si nécessaire
+            If OrderBy = Ascending And aTableau(IcBoucle2) > aTableau(IcBoucle2 + 1) Or _
+               OrderBy = Descending And aTableau(IcBoucle2) < aTableau(IcBoucle2 + 1) Then
+                ' Les 2 occurrences sont permutées
+                vPermutation = aTableau(IcBoucle2)
+                aTableau(IcBoucle2) = aTableau(IcBoucle2 + 1)
+                aTableau(IcBoucle2 + 1) = vPermutation
+                ' Le tableau n'est pas trié
+                bTableauTrie = False
             End If
-            If UBound(aPlage) = 1 Then
-                lNumeroLigneFin = Ligne(aPlage(1))
+        Next IcBoucle2
+        ' Si aucune vPermutation n'a été réalisée alors le tableau est trié, on peut sortir de la boucle
+        If bTableauTrie Then Exit For
+    Next IcBoucle1
+
+End Sub
+
+'-------------------------------------------------------------------------------------------------------------------------
+' Tri rapide d'un tableau de chaînes de caractères par ordre croissant
+' Avant appel du tri, les sentinelles doivent être placées en début et fin de tableau.
+'-------------------------------------------------------------------------------------------------------------------------
+' aTableau() : Tableau à trier
+' BorneInf   : numéro de la limite inférieure à trier. Le tri est effectué entre les 2 bornes.
+' BorneSup   : Numéro de la limite supérieure à trier
+'-------------------------------------------------------------------------------------------------------------------------
+' Exemple d'appel :
+' Dim aListe(5) As Variant
+' ' Sentinelle inférieure
+' aListe(0) = -2147483648#
+' aListe(1) = 8
+' aListe(2) = 3
+' aListe(3) = -8
+' aListe(4) = 6
+' ' Sentinelle supérieure
+' aListe(5) = 2147483647
+' Call TriRapide(aListe, 1, 4)
+' Debug.Print aListe(1), aListe(2), aListe(3), aListe(4)
+'-------------------------------------------------------------------------------------------------------------------------
+Public Sub TriRapide(aTableau() As Variant, BorneInf As Long, BorneSup As Long)
+    
+    ' Indice afin de parcourir le tableau depuis le début jusqu'au pivot
+    Dim IcDebTab As Long
+    ' Indice afin de parcourir le tableau depuis la fin jusqu'au pivot
+    Dim IcFinTab As Long
+    ' Permutation des valeurs
+    Dim vPermutation As Variant
+    ' Valeur pivot
+    Dim vValPivot As Variant
+    ' Booléen de fin de recherche du pivot
+    Dim bContinueTrt As Boolean
+    
+    If BorneSup > BorneInf Then
+        vValPivot = aTableau(BorneInf)
+        ' Débute la recherche à partir de l'indice suivant
+        IcDebTab = BorneInf + 1
+        IcFinTab = BorneSup
+        bContinueTrt = True
+        Do While bContinueTrt
+            Do While aTableau(IcDebTab) < vValPivot
+                IcDebTab = IcDebTab + 1
+            Loop
+            Do While aTableau(IcFinTab) >= vValPivot
+                IcFinTab = IcFinTab - 1
+            Loop
+            If IcDebTab >= IcFinTab Then
+                bContinueTrt = False
             Else
-                lNumeroLigneFin = lNumeroLigneDeb
+                vPermutation = aTableau(IcDebTab)
+                aTableau(IcDebTab) = aTableau(IcFinTab)
+                aTableau(IcFinTab) = vPermutation
             End If
-        Else
-            lNumeroLigneDeb = Ligne(sAdresse)
-            lNumeroLigneFin = lNumeroLigneDeb
-        End If
-        
-        For lNumeroLigne = lNumeroLigneDeb To lNumeroLigneFin
-            If Not ListeLignesSelectionnees.Contains(lNumeroLigne) Then
-                If Range("A" & lNumeroLigne).EntireRow.Hidden = False And lNumeroLigne > NumeroLigneEntete Then
-                    ListeLignesSelectionnees.Add lNumeroLigne
-                End If
-            End If
-        Next lNumeroLigne
-        
-    Next IcAdrCell
-    
-    If TriLignes = True Then
-        ListeLignesSelectionnees.Sort
+        Loop
+        vPermutation = aTableau(IcDebTab - 1)
+        aTableau(IcDebTab - 1) = vValPivot
+        aTableau(BorneInf) = vPermutation
+        Call TriRapide(aTableau, BorneInf, IcDebTab - 2)
+        Call TriRapide(aTableau, IcDebTab, BorneSup)
     End If
-    
-End Function
-
-' Extraire le numéro de ligne d'une adresse de cellule
-Private Function Ligne(sAdresseCell As String) As Long
-
-    Dim aAdresse() As String
-    
-    aAdresse = Split(sAdresseCell, "$")
-    
-    If IsNumeric(aAdresse(1)) Then
-        Ligne = CLng(aAdresse(2))
-    Else
-        If UBound(aAdresse) = 2 Then
-            Ligne = CLng(aAdresse(2))
-        Else
-            ' Absence de ligne (colonne sélectionnée)
-            Ligne = -1
-        End If
-    End If
-    
-End Function
+End Sub
