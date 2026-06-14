@@ -1,33 +1,69 @@
-# Bibliotheque
-<h1>Licence</h1>
-<p>Ce projet est distribué sous licence MIT. Consultez le fichier LICENSE pour plus de détails.</p>
-<h1>Prérequis</h1>
-<p>Environnement de développement : Microsoft Visual Basic for Applications (VBA)</p>
-<h1>Fonctions et procédures VBA</h1>
-<p>Le module VBA "Bibliotheque" propose un choix de fonctions et procédures utiles pour gérer vos projets. Ces fonctions permettent de réaliser des actions basiques et souvent redondantes dans les projets</p>
-<h2>Fonctions relatives aux onglets</h2>
-<ul>
- <li><strong>DeprotegerFeuille</strong> : ôter la protection d'une feuille.</li>
- <li><strong>ProtegerFeuille</strong> : protéger une feuille.</li>
- <li><strong>EstFeuilleExistante</strong> : vérifie si le nom de l'onglet existe dans le classeur. Exemple : EstFeuilleExistante(activeWorkBook,"Feuil1")</li>
- <li><strong>ValidationExiste</strong> : vérifie si la cellule de la feuille est une liste déroulante. Exemple : ValidationExiste(activeSheet, Range("B1")</li>
- <li><strong>DerniereLigne</strong> : retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.</li>
- <li><strong>DerniereColonne</strong> : retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.</li>
- <li><strong>NumeroColonne</strong> : convertit les lettres d'une colonne au numéro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.</li>
- <li><strong>LettreColonne</strong> : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".</li>
- <li><strong>CreerLienHypertexte</strong> : crée un lien hypertexte dans une cellule donnée du classeur, avec un nom affiché.</strong></li>
- <li><strong>AjouterListeDeroulante</strong> : ajoute une liste déroulante dans la feuille.</li>
-</ul>
-<h2>Fonctions génériques</h2>
-<ul>
- <li><strong>ExtensionFichier</strong> : retourne l'extension d'un fichier.</li>
- <li><strong>TriBulles</strong> : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.</li>
- <li><strong>TriRapide</strong> : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de trier.</li>
- <li><strong>InitialiserTraitement</strong> : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.</li>
- <li><strong>TerminerTraitement</strong> : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.</li>
- <li><strong>EstNomExistant</strong> : vérifie si un nom Excel existe dans le classeur.</li>
- <li><strong>ConvertirUrlSharePoint</strong> : convertit les répertoires sous forme d'URL (https://live....) dans un format compatible avec le systèmes de fichiers de Windows.</li> 
- <li><strong>FichierExiste</strong> : vérifie si le fichier en paramètre existe physiquement.</li>
- <li><strong>RepertoireExiste</strong> : vérifie si le répertoire en paramètre existe physiquement.</li>
- <li><strong>EnregistrerClasseurSous</strong> : enregistre le classeur actif sous le nom sélectionné dans la boîte de dialogue et avec le format prédéfini.</li>
-</ul>
+# 📚 Bibliothèque VBA
+
+![Langage](https://img.shields.io/badge/langage-VBA-blue)
+![Licence](https://img.shields.io/badge/Licence-MIT-green)
+
+Module VBA regroupant des fonctions utilitaires pour faciliter le développement de projets Excel.  
+Il couvre la gestion des feuilles, des validations, des fichiers, ainsi que des outils génériques comme le tri ou la gestion des traitements.
+
+---
+
+## 📄 Licence
+
+Ce projet est distribué sous licence **MIT**.  
+Consultez le fichier [`LICENSE`](LICENSE) pour plus de détails.
+
+---
+
+## 🧰 Prérequis
+
+- Environnement : **Microsoft Visual Basic for Applications (VBA)**
+- Compatible Excel (Windows)
+
+---
+
+# 🧩 Fonctions et procédures disponibles
+
+Le module `Bibliotheque` propose un ensemble de fonctions récurrentes et utiles pour vos projets VBA.
+
+---
+
+## 📑 Fonctions relatives aux feuilles
+
+| Fonction | Description |
+|---------|-------------|
+| **DeprotegerFeuille** | Ôte la protection d’une feuille. |
+| **ProtegerFeuille** | Protège une feuille. |
+| **EstFeuilleExistante** | Vérifie si un onglet existe dans le classeur.<br>Ex : `EstFeuilleExistante(ActiveWorkbook, "Feuil1")` |
+| **ValidationExiste** | Vérifie si une cellule contient une liste déroulante.<br>Ex : `ValidationExiste(ActiveSheet, Range("B1"))` |
+| **DerniereLigne** | Retourne la dernière ligne renseignée d’une colonne. |
+| **DerniereColonne** | Retourne la dernière colonne renseignée d’une ligne. |
+| **NumeroColonne** | Convertit une lettre de colonne en numéro.<br>Ex : `"A"` → `1` |
+| **LettreColonne** | Convertit un numéro de colonne en lettre.<br>Ex : `1` → `"A"` |
+| **AjouterListeDeroulante** | Ajoute une liste déroulante dans une cellule. |
+
+---
+
+## 🔧 Fonctions génériques
+
+| Fonction | Description |
+|---------|-------------|
+| **ExtensionFichier** | Retourne l’extension d’un fichier. |
+| **TriBulles** | Trie un tableau de chaînes (méthode du tri à bulles). |
+| **TriRapide** | Trie un tableau de chaînes (méthode du tri rapide).<br>⚠️ Nécessite l’initialisation de sentinelles. |
+| **InitialiserTraitement** | Désactive les rafraîchissements et événements pour accélérer un traitement. |
+| **TerminerTraitement** | Réactive les options désactivées par `InitialiserTraitement`. |
+| **EstNomExistant** | Vérifie si un nom Excel existe dans le classeur. |
+| **ConvertirUrlSharePoint** | Convertit une URL SharePoint en chemin compatible Windows. |
+| **FichierExiste** | Vérifie si un fichier existe physiquement. |
+| **RepertoireExiste** | Vérifie si un répertoire existe physiquement. |
+| **ListeLignesSelectionnees** | Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête. |
+
+---
+
+## 📦 Langage
+
+Ce projet est intégralement écrit en **VBA (Visual Basic for Applications)**.
+
+---
+
