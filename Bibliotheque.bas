@@ -75,7 +75,7 @@ End Enum
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : ExtensionFichier
 ' Rôle      : Retourne l'extension d'un fichier
-' Paramètre : NomFichier (String) -> nom physique d'un fichier avec son extension (répertoire facultatif)
+' Paramètre : NomFichier [String] - nom physique d'un fichier avec son extension (répertoire facultatif)
 ' Résultat  : La fonction retourne l'extension du fichier seule (sans le point)
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -94,7 +94,7 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Procédure : DeprotegerFeuille
 ' Rôle      : Oter la protection d'une feuille protégée
-' Paramètre : wsFeuille -> Objet feuille d'un classeur Excel
+' Paramètre : wsFeuille [Worksheet] - Objet feuille d'un classeur Excel
 ' Résultat  : Si la feuille est protégée alors la protection est désactivée
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -109,9 +109,9 @@ Public Sub DeprotegerFeuille(wsFeuille As Worksheet)
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : ProtegerFeuille
+' Procédure : ProtegerFeuille
 ' Rôle      : Protéger une feuille d'un classeur
-' Paramètre : wsFeuille -> Objet feuille d'un classeur Excel
+' Paramètre : wsFeuille [Worksheet] - Objet feuille d'un classeur Excel
 ' Résultat  : Si la feuille n'est pas protégée alors la protection est activée en protégeant l'interface utilisateur mais pas les macros
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -129,7 +129,7 @@ End Sub
 ' Fonction  : NumeroColonne
 ' Rôle      : Convertir une lettre de colonne en son numéro équivalent.
 '             Par exemple, la colonne A correspond au numéro 1, Z à 26, AA à 27, etc
-' Paramètre : ColonneAlphabet -> Lettre(s) de la colonne (entre "A" et "XFD")
+' Paramètre : ColonneAlphabet [String] - Lettre(s) de la colonne (entre "A" et "XFD")
 ' Résultat  : La fonction retourne le numéro de la colonne qui correspond aux lettres communiquées
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -163,7 +163,7 @@ End Function
 ' Fonction  : LettreColonne
 ' Rôle      : Convertir un numéro de colonne en lettre(s)
 '             Par exemple, la colonne 1 correspond au numéro A, 26 à Z, 27 à AA, etc
-' Paramètre : NumeroColonne -> Numéro de la colonne (entre 1 et 16384)
+' Paramètre : NumeroColonne [Long] - Numéro de la colonne (entre 1 et 16384)
 ' Résultat  : La fonction retourne les lettres de la colonne qui correspondent au numéro communiqué
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -195,8 +195,8 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : EstFeuilleExistante
 ' Rôle      : Vérifie si un nom de feuille existe déjà dans un classeur
-' Paramètre : wbClasseur -> Objet classeur qui contiendrait la feuille dont on veut vérifier la présence
-'             NomFeuille -> Nom de la feuille (onglet) dont on veut vérifier la présence dans un classeur donné
+' Paramètre : wbClasseur [Workbook] - Objet classeur qui contiendrait la feuille dont on veut vérifier la présence
+'             NomFeuille [String]   - Nom de la feuille (onglet) dont on veut vérifier la présence dans un classeur donné
 ' Résultat  : La fonction retourne True si la feuille existe dans le classeur sinon False
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -220,7 +220,7 @@ Public Function EstFeuilleExistante(wbClasseur As Workbook, NomFeuille As String
 End Function
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : InitialiserTraitement
+' Procédure : InitialiserTraitement
 ' Rôle      : Initialiser des traitements longs en désactivant le rafraichissement automatique de l'écran et les événements, affichant un sablier
 ' Paramètre : N/A
 ' Résultat  : Désactive le rafraichissement, affiche un sablier, désactive les événements
@@ -242,7 +242,7 @@ Public Sub InitialiserTraitement()
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : TerminerTraitement
+' Procédure : TerminerTraitement
 ' Rôle      : Terminer des traitements longs en réactivant le rafraichissement automatique de l'écran et les événements, affichant le curseur se souris
 ' Paramètre : N/A
 ' Résultat  : Réactive le rafraichissement, affiche le curseur par défaut, active les événements
@@ -264,8 +264,8 @@ End Sub
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : ValidationExiste
 ' Rôle      : Vérifie si une cellule est une liste déroulante
-' Paramètre : wsFeuille -> Objet feuille qui contient la cellule à inspecter
-'             Cellule -> Objet Cellule dont on veut déterminer si une liste déroulante est présente
+' Paramètre : wsFeuille [Worksheet] - Objet feuille qui contient la cellule à inspecter
+'             Cellule [Range]       - Objet Cellule dont on veut déterminer si une liste déroulante est présente
 ' Résultat  : La fonction retourne True si la cellule contient une liste déroulante
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -302,8 +302,8 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : EstNomExistant
 ' Rôle      : Vérifie si un nom donné existe dans un classeur
-' Paramètre : wsClasseur -> Objet classeur qui contiendrait le nom cherché
-'             Nom        -> Nom d'une cellule ou plage de cellules (Formules / Gestionnaire de noms)
+' Paramètre : wsClasseur [Workbook] - Objet classeur qui contiendrait le nom cherché
+'             Nom [String]          - Nom d'une cellule ou plage de cellules (Formules / Gestionnaire de noms)
 ' Résultat  : La fonction retourne True si le Nom donné existe dans le classeur donné
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -328,8 +328,8 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : DerniereLigne
 ' Rôle      : Retourne le numéro de la dernière ligne qui contient des données dans une colonne donnée
-' Paramètre : wsFeuille     -> Objet Feuille dans laquelle la recherche sera effectuée
-'             NumeroColonne -> Numéro de la colonne dans laquelle rechercher la dernière donnée présente
+' Paramètre : wsFeuille [Worksheet] - Objet Feuille dans laquelle la recherche sera effectuée
+'             NumeroColonne [Long]  - Numéro de la colonne dans laquelle rechercher la dernière donnée présente
 ' Résultat  : La fonction retourne le numéro de la ligne qui contient la dernière donnée renseignée dans la colonne donnée
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -355,8 +355,8 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : DerniereColonne
 ' Rôle      : Retourne le numéro de la dernière colonne qui contient des données dans une ligne donnée
-' Paramètre : wsFeuille   -> Objet Feuille dans laquelle la recherche sera effectuée
-'             NumeroLigne -> Numéro de la ligne dans laquelle rechercher la dernière donnée présente
+' Paramètre : wsFeuille [Worksheet] - Objet Feuille dans laquelle la recherche sera effectuée
+'             NumeroLigne [Long]    - Numéro de la ligne dans laquelle rechercher la dernière donnée présente
 ' Résultat  : La fonction retourne le numéro de la colonne qui contient la dernière donnée renseignée dans la ligne donnée
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -383,7 +383,7 @@ End Function
 ' Fonction  : ConvertirUrlSharePoint
 ' Rôle      : Convertir un nom de chemin défini par une URL OneDrive ou SharePoint vers un nom de chemin Windows
 '             Exemple : https://xxx-my.sharepoint.com/personal/ devient c:\Users\xxxx\OneDrive - xxx
-' Paramètre : Chemin -> chemin d'accès à un répertoire ou fichier
+' Paramètre : Chemin [String] - chemin d'accès à un répertoire ou fichier
 ' Résultat  : La fonction retourne le répertoire pour accéder à l'URL en entrée
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -426,7 +426,7 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : FichierExiste
 ' Rôle      : Vérifie si un fichier physique existe
-' Paramètre : NomFichier -> Nom du fichier dont l'existence doit être vérifiée (inclure le répertoire avant le nom)
+' Paramètre : NomFichier [String] - Nom du fichier dont l'existence doit être vérifiée (inclure le répertoire avant le nom)
 ' Résultat  : La fonction retourne True si le fichier existe
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -441,7 +441,7 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : RepertoireExiste
 ' Rôle      : Vérifie si un répertoire existe
-' Paramètre : Repertoire -> répertoire dont l'existence doit être vérifiée
+' Paramètre : Repertoire [String] - répertoire dont l'existence doit être vérifiée
 ' Résultat  : La fonction retourne True si le répertoire existe
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -454,14 +454,14 @@ Public Function RepertoireExiste(Repertoire As String) As Boolean
 End Function
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : AjouterListeDeroulante
+' Procédure : AjouterListeDeroulante
 ' Rôle      : Créer une liste déroulante dans une cellule donnée
-' Paramètre : Cellule        -> Objet Cellule (unique) dans lequel la liste déroulante doit être créée
-'             Formula1       -> Renvoie la valeur ou l'expression associée au format conditionnel ou à la validation des données.
-'                               Il peut s’agir d’une valeur constante, d’une valeur de chaîne, d’une référence de cellule ou d’une formule. Type de données String en lecture seule.
-'             InCellDropdown -> True si la validation de données affiche une liste déroulante qui contient les valeurs autorisées.
-'             IgnoreBlank    -> Cette propriété a la valeur True si des valeurs nulles sont autorisées par la validation de données de la plage.
-'             ShowError      -> True si le message d’erreur de validation de données s’affiche lorsque l’utilisateur entre des données non valides.
+' Paramètre : Cellule [Range]          - Objet Cellule (unique) dans lequel la liste déroulante doit être créée
+'             Formula1 [String]        - Renvoie la valeur ou l'expression associée au format conditionnel ou à la validation des données.
+'                                        Il peut s’agir d’une valeur constante, d’une valeur de chaîne, d’une référence de cellule ou d’une formule. Type de données String en lecture seule.
+'             InCellDropdown [Boolean] - True si la validation de données affiche une liste déroulante qui contient les valeurs autorisées.
+'             IgnoreBlank [Boolean]    - Cette propriété a la valeur True si des valeurs nulles sont autorisées par la validation de données de la plage.
+'             ShowError [Boolean]      - True si le message d’erreur de validation de données s’affiche lorsque l’utilisateur entre des données non valides.
 ' Résultat  : La procédure crée une liste déroulante constituée des éléments présents dans le nom donné
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -487,7 +487,7 @@ End Sub
 '-------------------------------------------------------------------------------------------------------------------------
 ' Fonction  : ListeLignesSelectionnees
 ' Rôle      : Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête
-' Paramètre : NumeroLigneEntete -> Numéro de ligne à partir duquel les lignes sont ajoutées dans la liste
+' Paramètre : NumeroLigneEntete [Long] - Numéro de ligne à partir duquel les lignes sont ajoutées dans la liste
 ' Résultat  : numéros des lignes sélectionnées triées
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -515,10 +515,10 @@ Public Function ListeLignesSelectionnees(Optional NumeroLigneEntete As Long = 0)
 End Function
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : TriBulles
+' Procédure : TriBulles
 ' Rôle      : Tri à bulles
-' Paramètre : aTableau() -> Tableau à trier
-'             OrderBy    -> Ordre du tri
+' Paramètre : aTableau() [Variant]  - Tableau à trier
+'             OrderBy [OrderByEnum] - Ordre du tri
 ' Résultat  : Tableau trié
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
@@ -559,12 +559,12 @@ Public Sub TriBulles(aTableau() As Variant, OrderBy As OrderByEnum)
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : TriRapide
+' Procédure : TriRapide
 ' Rôle      : Tri rapide d'un tableau de chaînes de caractères par ordre croissant
 '             Avant appel du tri, les sentinelles doivent être placées en début et fin de tableau.
-' Paramètre : aTableau() -> Tableau à trier
-'             BorneInf   -> numéro de la limite inférieure à trier. Le tri est effectué entre les 2 bornes.
-'             BorneSup   -> Numéro de la limite supérieure à trier
+' Paramètre : aTableau() (Varaint) - Tableau à trier
+'             BorneInf [Long]      - numéro de la limite inférieure à trier. Le tri est effectué entre les 2 bornes.
+'             BorneSup [Long]      - Numéro de la limite supérieure à trier
 ' Résultat  : Tableau trié
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
