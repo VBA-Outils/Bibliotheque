@@ -29,7 +29,7 @@ Attribute VB_Name = "Bibliotheque"
 ' (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 ' LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ' ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-' (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+' (INCLUDING NEGligneCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ' SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
 
@@ -59,6 +59,7 @@ Attribute VB_Name = "Bibliotheque"
 ' FichierExiste            : vérifie si le fichier en paramètre existe physiquement.
 ' RepertoireExiste         : vérifie si le répertoire en paramètre existe physiquement.
 ' ListeLignesSelectionnees : Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête
+' CreerTS                  : Créer un tableau structuré qui contient une table
 '-------------------------------------------------------------------------------------------------------------------------
 
 Option Explicit
@@ -100,28 +101,50 @@ End Function
 ' Exemple d'appel :
 ' Call DeprotegerFeuille(worksheets("Feuil1")) => supprime la protection de la feuille "Feuil1"
 '-------------------------------------------------------------------------------------------------------------------------
-Public Sub DeprotegerFeuille(wsFeuille As Worksheet)
+Public Sub DeprotegerFeuille(wsFeuille As Worksheet, Optional Password As String = "")
 
-    If wsFeuille.ProtectContents = True Then
-        wsFeuille.Unprotect
-    End If
+    wsFeuille.Unprotect Password:=Password
 
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
 ' Procédure : ProtegerFeuille
 ' Rôle      : Protéger une feuille d'un classeur
-' Paramètre : wsFeuille [Worksheet] - Objet feuille d'un classeur Excel
+' Paramètre : wsFeuille [Worksheet] -> Objet feuille d'un classeur Excel
+'             Password (string) -> Mot de passe de protection. Chaîne de caractères.
+'             DrawingObjects (Boolean) -> Protège les objets de dessin : formes, zones de texte, graphiques, SmartArt, etc.
+'             Contents (Boolean) -> Protège le contenu des cellules. C’est le paramètre le plus courant.
+'             Scenarios (Boolean) -> Protège les scénarios (fonctionnalité Excel peu utilisée aujourd’hui).
+'             UserInterfaceOnly (Boolean) -> Protège la feuille pour l’utilisateur, mais autorise le VBA à modifier la feuille.
+'                                            Très utile pour les macros qui doivent écrire dans une feuille protégée.
+'             AllowFormattingCells (Boolean)
+'             AllowFormattingColumns (Boolean)
+'             AllowFormattingRows (Boolean)
+'             AllowInsertingColumns (Boolean)
+'             AllowInsertingRows (Boolean)
+'             AllowInsertingHyperlinks (Boolean)
+'             AllowDeletingColumns (Boolean)
+'             AllowDeletingRows (Boolean)
+'             AllowSorting (Boolean)
+'             AllowFiltering (Boolean)
+'             AllowUsingPivotTables (Boolean)
 ' Résultat  : Si la feuille n'est pas protégée alors la protection est activée en protégeant l'interface utilisateur mais pas les macros
 '-------------------------------------------------------------------------------------------------------------------------
 ' Exemple d'appel :
 ' Call ProtegerFeuille(worksheets("Feuil1")) => protège la feuille "Feuil1"
 '-------------------------------------------------------------------------------------------------------------------------
-Public Sub ProtegerFeuille(wsFeuille As Worksheet)
+Public Sub ProtegerFeuille(wsFeuille As Worksheet, Optional Password As String = "", Optional DrawingObjects As Boolean = False, Optional Contents As Boolean = False, _
+                           Optional Scenarios As Boolean = False, Optional UserInterfaceOnly As Boolean = False, Optional AllowFormattingCells As Boolean = False, _
+                           Optional AllowFormattingColumns As Boolean = False, Optional AllowFormattingRows As Boolean = False, Optional AllowInsertingColumns As Boolean = False, _
+                           Optional AllowInsertingRows As Boolean = False, Optional AllowInsertingHyperlinks As Boolean = False, Optional AllowDeletingColumns As Boolean = False, _
+                           Optional AllowDeletingRows As Boolean = False, Optional AllowSorting As Boolean = False, Optional AllowFiltering As Boolean = False, _
+                           Optional AllowUsingPivotTables As Boolean = False)
 
-    If wsFeuille.ProtectContents = False Then
-        wsFeuille.Protect UserInterfaceOnly:=True
-    End If
+    wsFeuille.Protect Password:=Password, DrawingObjects:=DrawingObjects, Contents:=Contents, Scenarios:=Scenarios, UserInterfaceOnly:=UserInterfaceOnly, _
+        AllowFormattingCells:=AllowFormattingCells, AllowFormattingColumns:=AllowFormattingColumns, AllowFormattingRows:=AllowFormattingRows, _
+        AllowInsertingColumns:=AllowInsertingColumns, AllowInsertingRows:=AllowInsertingRows, AllowInsertingHyperlinks:=AllowInsertingHyperlinks, _
+        AllowDeletingColumns:=AllowDeletingColumns, AllowDeletingRows:=AllowDeletingRows, AllowSorting:=AllowSorting, _
+        AllowFiltering:=AllowFiltering, AllowUsingPivotTables:=AllowUsingPivotTables
     
 End Sub
 
@@ -273,12 +296,12 @@ End Sub
 '-------------------------------------------------------------------------------------------------------------------------
 Public Function ValidationExiste(wsFeuille As Worksheet, Cellule As Range) As Boolean
 
-    Dim rCible As Range, bFeuilleProtegee As Boolean
+    Dim rCible As Range
+    Dim ProtectionCI As New ProtectionState
  
-    ' Sauvegarde l'état de protection de la feuille
-    bFeuilleProtegee = wsFeuille.ProtectContents
-    ' Déprotéger la feuille afin de pouvoir rechercher les cellules de validation
-    If bFeuilleProtegee Then Call DeprotegerFeuille(wsFeuille)
+    ' Déprotéger la feuille afin de pouvoir insérer une ligne
+    ProtectionCI.LoadFromWorksheet ActiveSheet
+    ProtectionCI.UnprotectWorksheet ActiveSheet
     
     ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non protégée.
     Set rCible = wsFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
@@ -295,8 +318,9 @@ Public Function ValidationExiste(wsFeuille As Worksheet, Cellule As Range) As Bo
     End If
     
     ' Protéger de nouveau la feuille
-    If bFeuilleProtegee Then Call ProtegerFeuille(wsFeuille)
-
+    ProtectionCI.ApplyToWorksheet ActiveSheet
+    Set ProtectionCI = Nothing
+    
 End Function
 
 '-------------------------------------------------------------------------------------------------------------------------
@@ -501,7 +525,9 @@ Public Function ListeLignesSelectionnees(Optional NumeroLigneEntete As Long = 0)
     ' Pour chaque cellule sélectionnée dans le classeur actif
     For Each rCell In Selection.Cells
         ' Si le numéro de ligne de la cellule est supérieur à celui de l'en-tête alors on ajoute ce numéro à la liste
-        If rCell.Row > NumeroLigneEntete Then dListeLignes(rCell.Row) = True
+        If rCell.Row > NumeroLigneEntete Then
+            dListeLignes(rCell.Row) = True
+        End If
     Next rCell
     
     ' Convertir en tableau pour le tri
@@ -620,4 +646,39 @@ Public Sub TriRapide(aTableau() As Variant, BorneInf As Long, BorneSup As Long)
         Call TriRapide(aTableau, BorneInf, IcDebTab - 2)
         Call TriRapide(aTableau, IcDebTab, BorneSup)
     End If
+End Sub
+
+'-------------------------------------------------------------------------------------------------------------------------
+' Procédure : CreerTS
+' Rôle      : Créer un tableau structuré à partir de la ligne qui contient le nom des colonnes
+' Paramètre : wsFeuille -> Objet feuille où le tableau structuré doit être créé
+'             lLigTs    -> première ligne du tableau structuré
+'             LDernCol  -> Dernière colonne du tableau structuré
+'             sNomTs    -> Nom du tableau structuré
+' Résultat  : Tableau structuré créé
+'-------------------------------------------------------------------------------------------------------------------------
+Public Sub CreerTS(wsFeuille As Worksheet, lLigTs As Long, lDernCol As Long, sNomTS As String)
+
+    Dim tsTable As ListObject, rCell As Range
+    
+    With wsFeuille
+        .Range("A" & (lLigTs + 1)).Select
+        .Activate
+    End With
+    ActiveWindow.FreezePanes = True
+    
+    Set rCell = wsFeuille.Range("A" & lLigTs & ":" & LettreColonne(lDernCol) & lLigTs)
+    Set tsTable = wsFeuille.ListObjects.Add(SourceType:=xlSrcRange, Source:=rCell, XlListObjectHasHeaders:=xlYes)
+    
+    With tsTable
+       .ShowTableStyleRowStripes = True       ' Lignes sur couleurs de fond alternées
+       .ShowTableStyleColumnStripes = True    ' Colonnes sur couleurs de fond alternées
+       .ShowTotals = False                    ' Affichage de la ligne de totaux
+       .ShowAutoFilterDropDown = True         ' Affichage des boutons de filtres automatiques sur les en-têtes
+       .TableStyle = "TableStyleLight9"       ' Style général (parmi la liste des styles prédéfinis fournis par Excel)
+       .Name = sNomTS
+    End With
+    
+    Set tsTable = Nothing
+    
 End Sub
