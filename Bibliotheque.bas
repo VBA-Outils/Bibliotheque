@@ -36,31 +36,37 @@ Attribute VB_Name = "Bibliotheque"
 '-------------------------------------------------------------------------------------------------------------------------
 ' Bibliothèque de procédures / fonctions multi-projets
 '-------------------------------------------------------------------------------------------------------------------------
-'
-'-------------------------------------------------------------------------------------------------------------------------
-' Fonction / Procédure     : Description
-'-------------------------------------------------------------------------------------------------------------------------
-' DeprotegerFeuille        : ôter la protection d'une feuille.
-' ProtegerFeuille          : protéger une feuille.
-' EstFeuilleExistante      : vérifie si le nom de l'onglet existe dans le classeur. Exemple : EstFeuilleExistante(activeWorkBook,"Feuil1")
-' ValidationExiste         : vérifie si la cellule de la feuille est une liste déroulante. Exemple : ValidationExiste(activeSheet, Range("B1")
-' DerniereLigne            : retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.
-' DerniereColonne          : retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.
-' NumeroColonne            : convertit les lettres d'une colonne au numéro de colonne correspondant. Exemple : NumeroColonne("A") retourne 1.
-' LettreColonne            : convertit un numéro de colonne au format Lettre. Exemple : LettreColonne(1) retourne "A".
-' AjouterListeDeroulante   : ajoute une liste déroulante dans la feuille.
-' ExtensionFichier         : retourne l'extension d'un fichier.
-' TriBulles                : trie un tableau de chaînes de caractères avec la méthode du tri à bulles.
-' TriRapide                : trie un tableau de chaînes de caractères avec la méthode du tri rapide. Cette méthode nécessite d'initialiser des sentinelles avant de trier.
-' InitialiserTraitement    : procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement automatique et les événements. Elle permet d'améliorer les performances en désactivant les rafraîchissements de l'écran en arrière-plan.
-' TerminerTraitement       : procédure à exécuter à la fin du traitement afin d'annuler les désactivations réalisées à l'initialisation.
-' EstNomExistant           : vérifie si un nom Excel existe dans le classeur.
-' ConvertirUrlSharePoint   : convertit les répertoires sous forme d'URL (https://live....) dans un format compatible avec le systèmes de fichiers de Windows.
-' FichierExiste            : vérifie si le fichier en paramètre existe physiquement.
-' RepertoireExiste         : vérifie si le répertoire en paramètre existe physiquement.
-' ListeLignesSelectionnees : Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête
-' CreerTS                  : Créer un tableau structuré qui contient une table
-'-------------------------------------------------------------------------------------------------------------------------
+
+' +--------------------------------+-------------------------------------------------------------------------------------+
+' | Fonction / Procédure           | Description                                                                         |
+' +--------------------------------+-------------------------------------------------------------------------------------+
+' | DeprotegerFeuille              | Oter la protection d'une feuille.                                                   |
+' | ProtegerFeuille                | Protéger une feuille.                                                               |
+' | EstFeuilleExistante            | Vérifie si le nom de l'onglet existe dans le classeur.                              |
+' | EstClasseurOuvert              | Vérifie si un classeur est ouvert dans Excel                                        |
+' | ValidationExiste               | Vérifie si la cellule de la feuille est une liste déroulante.                       |
+' | DerniereLigne                  | Retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.     |
+' | DerniereColonne                | Retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.     |
+' | NumeroColonne                  | Convertit les lettres d'une colonne au numéro de colonne correspondant.             |
+' | LettreColonne                  | Convertit un numéro de colonne au format Lettre.                                    |
+' | AjouterListeDeroulante         | Ajoute une liste déroulante dans la feuille.                                        |
+' | ExtensionFichier               | Retourne l'extension d'un fichier.                                                  |
+' | TriBulles                      | Trie un tableau de chaînes de caractères avec la méthode du tri à bulles.           |
+' | TriRapide                      | Trie un tableau de chaînes de caractères avec la méthode du tri rapide.             |
+' |                                | Cette méthode nécessite d'initialiser des sentinelles avant de trier.               |
+' | InitialiserTraitement          | Procédure à exécuter au début d'un traitement afin de désactiver le rafraîchissement|
+' |                                | automatique et les événements. Elle permet d'améliorer les performances en          |
+' |                                | désactivant les rafraîchissements de l'écran en arrière-plan.                       |
+' | TerminerTraitement             | Procédure à exécuter à la fin du traitement afin d'annuler les désactivations       |
+' |                                | réalisées à l'initialisation.                                                       |
+' | EstNomExistant                 | Vérifie si un nom Excel existe dans le classeur.                                    |
+' | ConvertirUrlSharePoint         | Convertit les répertoires sous forme d'URL (https://live....) dans un format        |
+' |                                | compatible avec le systèmes de fichiers de Windows.                                 |
+' | FichierExiste                  | Vérifie si le fichier en paramètre existe physiquement.                             |
+' | RepertoireExiste               | Vérifie si le répertoire en paramètre existe physiquement.                          |
+' | ListeLignesSelectionnees       | Déterminer la liste des lignes sélectionnées après un numéro de ligne d'en-tête     |
+' | CreerTS                        | Créer un tableau structuré qui contient une table                                   |
+' +--------------------------------+-------------------------------------------------------------------------------------+
 
 Option Explicit
 Option Compare Text
@@ -90,6 +96,7 @@ Public Function ExtensionFichier(NomFichier As String) As String
     If lPosPt > 0 Then
         ExtensionFichier = LCase$(Right$(NomFichier, Len(NomFichier) - lPosPt))
     End If
+    
 End Function
 
 '-------------------------------------------------------------------------------------------------------------------------
@@ -232,7 +239,7 @@ Public Function EstFeuilleExistante(wbClasseur As Workbook, NomFeuille As String
     ' Pour chaque feuille présente dans le classeur
     For Each wsFeuille In wbClasseur.Worksheets
         ' Si le nom de la feuille en entrée est identique à celui d'une feuille du classeur (ne pas tenir compte de la casse)
-        If UCase$(wsFeuille.Name) = UCase$(NomFeuille) Then
+        If StrComp(wsFeuille.Name, NomFeuille, vbTextCompare) = 0 Then
             ' La feuille existe dans le classeur, on retourne le booléen Vrai
             EstFeuilleExistante = True
             Exit Function
@@ -241,6 +248,28 @@ Public Function EstFeuilleExistante(wbClasseur As Workbook, NomFeuille As String
     EstFeuilleExistante = False
     
 End Function
+
+'-------------------------------------------------------------------------------------------------------------------------
+' Fonction  : EstClasseurOuvert
+' Rôle      : Vérifie si le classeur est ouvert dans Excel
+' Paramètre : NomClasseur [string] - Nom du classeur à contrôler
+' Résultat  : La fonction retourne True si le classeur est ouvert dans Excel sinon False
+'-------------------------------------------------------------------------------------------------------------------------
+Public Function EstClasseurOuvert(NomClasseur As String) As Boolean
+
+    Dim wbClasseur As Workbook
+
+    ' Pour chaque classeur ouvert dans Excel
+    For Each wbClasseur In Workbooks
+        If StrComp(NomClasseur, wbClasseur.Name, vbTextCompare) = 0 Then
+            EstClasseurOuvert = True
+            Exit Function
+        End If
+    Next wbClasseur
+    EstClasseurOuvert = False
+    
+End Function
+
 
 '-------------------------------------------------------------------------------------------------------------------------
 ' Procédure : InitialiserTraitement
@@ -341,7 +370,7 @@ Public Function EstNomExistant(wbClasseur As Workbook, Nom As String) As Boolean
     ' Pour chaque nom présent dans le classeur
     For Each nNom In wbClasseur.Names
         ' Si le nom en entrée existe dans le classeur
-        If nNom.Name = Nom Then
+        If StrComp(nNom.Name, Nom, vbTextCompare) = 0 Then
             EstNomExistant = True
             Exit For
         End If
@@ -415,18 +444,18 @@ End Function
 '-------------------------------------------------------------------------------------------------------------------------
 Public Function ConvertirUrlSharePoint(Chemin As String) As String
 
-    Dim sListeDossiers() As String, iNbDossiers As Integer, lPosDoc As Long, Repertoire As String
+    Dim sListeDossiers() As String, iNbDossiers As Integer, lPosDoc As Long, sRepertoire As String
     
     ' Si le chemin du fichier commence par http
-    If LCase$(Left(Chemin, 4)) = "http" Then
+    If StrComp(Left(Chemin, 4), "http", vbTextCompare) = 0 Then
         Select Case True
         ' Espace personnel sur SharePoint (i.e. OneDrive Commercial)
         Case Chemin Like "https://*-my.sharepoint.com/personal/*"
             ' Recherche la chaîne "/Documents/documents" afin d'obtenir le début de l'arborescence dans le dossier des documents
             lPosDoc = InStr(1, Chemin, "/Documents/Documents/", vbTextCompare) + Len("/Documents")
             ' Le répertoire local est récupéré à partir du 2ème /Documents
-            Repertoire = Mid(Chemin, lPosDoc, Len(Chemin) - lPosDoc + 1)
-            ConvertirUrlSharePoint = Environ("OneDriveCommercial") & Replace(Repertoire, "/", "\")
+            sRepertoire = Mid(Chemin, lPosDoc, Len(Chemin) - lPosDoc + 1)
+            ConvertirUrlSharePoint = Environ("OneDriveCommercial") & Replace(sRepertoire, "/", "\")
         ' Espace de travail partagé
         Case Chemin Like "https://weshare*"
             sListeDossiers = Split(Chemin, "/")
@@ -438,8 +467,8 @@ Public Function ConvertirUrlSharePoint(Chemin As String) As String
             ' Recherche la chaîne "/documents" afin d'obtenir le début de l'arborescence dans le dossier des documents
             lPosDoc = InStr(1, Chemin, "/Documents/", vbTextCompare)
             ' Le répertoire local est récupéré à partir du 2ème /Documents
-            Repertoire = Mid(Chemin, lPosDoc, Len(Chemin) - lPosDoc + 1)
-            ConvertirUrlSharePoint = Environ("OneDrive") & Replace(Repertoire, "/", "\")
+            sRepertoire = Mid(Chemin, lPosDoc, Len(Chemin) - lPosDoc + 1)
+            ConvertirUrlSharePoint = Environ("OneDrive") & Replace(sRepertoire, "/", "\")
         End Select
     Else
         ConvertirUrlSharePoint = Chemin
@@ -506,6 +535,7 @@ Public Sub AjouterListeDeroulante(Cellule As Range, Formula1 As String, IgnoreBl
         .ShowInput = True
         .ShowError = ShowError
     End With
+    
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
