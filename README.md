@@ -24,7 +24,9 @@ Consultez le fichier [`LICENSE`](LICENSE) pour plus de détails.
 
 # 🧩 Fonctions et procédures disponibles
 
-Le module `Bibliotheque` propose un ensemble de fonctions récurrentes et utiles pour vos projets VBA.
+Le module `Bibliotheque` propose un ensemble de fonctions utiles pour vos projets VBA.
+
+Le module `ProtectionState` propose une classe qui protège ou ôte la protection d'une feuille. Elle est utilisée par le module `Bibliotheque`.
 
 ---
 
