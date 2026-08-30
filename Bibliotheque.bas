@@ -326,8 +326,8 @@ Public Function EstListeDeroulante(wsFeuille As Worksheet, Cellule As Range, Opt
     Dim ProtectionCI As New ProtectionState
  
     ' Déprotéger la feuille afin de pouvoir insérer une ligne
-    ProtectionCI.LoadFromWorksheet ActiveSheet
-    ProtectionCI.UnprotectWorksheet ActiveSheet, MotDePasse
+    ProtectionCI.LoadFromWorksheet wsFeuille
+    ProtectionCI.UnprotectWorksheet wsFeuille, MotDePasse
     
     ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non protégée.
     Set rCible = wsFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
@@ -344,7 +344,7 @@ Public Function EstListeDeroulante(wsFeuille As Worksheet, Cellule As Range, Opt
     End If
     
     ' Protéger de nouveau la feuille
-    ProtectionCI.ApplyToWorksheet ActiveSheet, MotDePasse
+    ProtectionCI.ApplyToWorksheet wsFeuille, MotDePasse
     Set ProtectionCI = Nothing
     
 End Function
