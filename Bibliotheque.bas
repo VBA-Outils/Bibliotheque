@@ -44,7 +44,7 @@ Attribute VB_Name = "Bibliotheque"
 ' | ProtegerFeuille                | Protéger une feuille.                                                               |
 ' | EstFeuilleExistante            | Vérifie si le nom de l'onglet existe dans le classeur.                              |
 ' | EstClasseurOuvert              | Vérifie si un classeur est ouvert dans Excel                                        |
-' | ValidationExiste               | Vérifie si la cellule de la feuille est une liste déroulante.                       |
+' | EstListeDeroulante             | Vérifie si la cellule de la feuille est une liste déroulante.                       |
 ' | DerniereLigne                  | Retourne le numéro de la dernière ligne renseignée d'une colonne d'une feuille.     |
 ' | DerniereColonne                | Retourne le numéro de la dernière colonne renseignée d'une ligne d'une feuille.     |
 ' | NumeroColonne                  | Convertit les lettres d'une colonne au numéro de colonne correspondant.             |
@@ -314,40 +314,37 @@ Public Sub TerminerTraitement()
 End Sub
 
 '-------------------------------------------------------------------------------------------------------------------------
-' Fonction  : ValidationExiste
+' Fonction  : EstListeDeroulante
 ' Rôle      : Vérifie si une cellule est une liste déroulante
 ' Paramètre : wsFeuille [Worksheet] - Objet feuille qui contient la cellule à inspecter
 '             Cellule [Range]       - Objet Cellule dont on veut déterminer si une liste déroulante est présente
 ' Résultat  : La fonction retourne True si la cellule contient une liste déroulante
 '-------------------------------------------------------------------------------------------------------------------------
-' Exemple d'appel :
-' ValidationExiste(ActiveSheet,Range("B1")) => retourne True si la cellule B1 contient une liste déraoulante
-'-------------------------------------------------------------------------------------------------------------------------
-Public Function ValidationExiste(wsFeuille As Worksheet, Cellule As Range) As Boolean
+Public Function EstListeDeroulante(wsFeuille As Worksheet, Cellule As Range, Optional MotDePasse As String = "") As Boolean
 
     Dim rCible As Range
     Dim ProtectionCI As New ProtectionState
  
     ' Déprotéger la feuille afin de pouvoir insérer une ligne
     ProtectionCI.LoadFromWorksheet ActiveSheet
-    ProtectionCI.UnprotectWorksheet ActiveSheet
+    ProtectionCI.UnprotectWorksheet ActiveSheet, MotDePasse
     
     ' Recherche toutes les cellules contenant une liste de validation dans la feuille active et non protégée.
     Set rCible = wsFeuille.Cells.SpecialCells(xlCellTypeAllValidation)
     
     ' Si aucune cellule de validation trouvée dans la feuille
     If rCible Is Nothing Then
-        ValidationExiste = False
+        EstListeDeroulante = False
     Else
         If Intersect(rCible, Cellule) Is Nothing Then
-            ValidationExiste = False
+            EstListeDeroulante = False
         Else
-            ValidationExiste = True
+            EstListeDeroulante = True
         End If
     End If
     
     ' Protéger de nouveau la feuille
-    ProtectionCI.ApplyToWorksheet ActiveSheet
+    ProtectionCI.ApplyToWorksheet ActiveSheet, MotDePasse
     Set ProtectionCI = Nothing
     
 End Function
@@ -692,8 +689,8 @@ Public Sub CreerTS(wsFeuille As Worksheet, lLigTs As Long, lDernCol As Long, sNo
     Dim tsTable As ListObject, rCell As Range
     
     With wsFeuille
-        .Range("A" & (lLigTs + 1)).Select
         .Activate
+        .Range("A" & (lLigTs + 1)).Select
     End With
     ActiveWindow.FreezePanes = True
     
